@@ -22,11 +22,14 @@ class CountryService(private val client: HttpClient) {
                     Json { ignoreUnknownKeys = true }
                 val response: List<CountryDTO> =
                     json.decodeFromString(stringBody)
+                client.close()
                 CountryResult.Success(response)
             } else {
+                client.close()
                 CountryResult.Failure(Exception("Request failed with status code: ${httpResponse.status.value}"))
             }
         } catch (e: Exception) {
+            client.close()
             Log.d("Something went wrong:", "${e.localizedMessage}")
             CountryResult.Failure(e)
         }
